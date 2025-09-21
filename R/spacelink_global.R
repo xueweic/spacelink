@@ -38,14 +38,14 @@
 #' expr_data <- matrix(nrow=n_genes, ncol=n_spots)
 #' rownames(expr_data) <- paste0("Gene_", 1:n_genes)
 #' D <- as.matrix(dist(coords))
-#' K <- exp(-D); chol_K <- chol(K)
+#' K <- exp(-D/2); chol_K <- chol(K)
 #' for(i in 1:(n_genes/2)){
 #'   expr_data[i,] <- matrix(rnorm(n_spots, 0, 1), nrow=1, ncol=n_spots)
 #'   expr_data[i,] <- expr_data[i,] + i*matrix(rnorm(n_spots, 0, 1), 1, n_spots)%*%chol_K
 #' }
 #' # Simulate (normalized) expression data without spatial autocorrelation
 #' for(i in (n_genes/2+1):n_genes){
-#'   expr_data[i,] <- i*matrix(rnorm(n_spots, 0, 1), nrow=1, ncol=n_spots)
+#'   expr_data[i,] <- matrix(rnorm(n_spots, 0, 1), nrow=1, ncol=n_spots)
 #' }
 #' 
 #' global_results <- spacelink_global(normalized_counts = expr_data, spatial_coords = coords)
@@ -82,7 +82,7 @@ spacelink_global <- function(normalized_counts, spatial_coords, covariates = NUL
   phi_mat <- as.data.frame(phi_mat)
 
   if(is.null(X)){
-    Y <- Y - rowMeans(Y)
+    Y <- Y - apply(Y,1,mean)
   }else{
     X <- cbind(rep(1,nrow(X)), X)
     Y <- Y - t(X %*% solve(crossprod(X), crossprod(X,t(Y))))
