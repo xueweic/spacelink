@@ -81,10 +81,10 @@ spacelink_cell_type <- function(normalized_counts, spatial_coords, cell_type_pro
   X <- covariates
 
   if(!is.null(global_spacelink_results)){
-    if(nrow(Y)!=nrow(global_results)){
+    if(nrow(Y)!=nrow(global_spacelink_results)){
       stop("The row dimensions of normalized_counts and global_spacelink_results should be the same.")
     }
-    phi_mat = global_results[,grep("phi",colnames(global_results))]
+    phi_mat = global_spacelink_results[,grep("phi",colnames(global_spacelink_results))]
     n_lengthscales <- ncol(phi_mat)
   }else{
     if(!is.null(lengthscales)){
